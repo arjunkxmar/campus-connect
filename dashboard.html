@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | CampusConnect - Doubt Exchange</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="brand-logo">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span>Campus<span class="brand-accent">Connect</span></span>
+                </a>
+            </div>
+
+            <div class="sidebar-content">
+                <div>
+                    <!-- Quick Ask a Doubt Action -->
+                    <div class="sidebar-ask-btn-wrap">
+                        <a href="ask-doubt.html" class="btn btn-primary sidebar-ask-btn">
+                            <i class="fa-solid fa-plus-circle"></i> Ask a Doubt
+                        </a>
+                    </div>
+
+                    <!-- Sidebar Nav Items -->
+                    <ul class="sidebar-nav-list">
+                        <li>
+                            <a href="dashboard.html" class="sidebar-nav-link active">
+                                <i class="fa-solid fa-gauge"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="explore.html" class="sidebar-nav-link">
+                                <i class="fa-solid fa-compass"></i>
+                                <span>Explore Doubts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="ask-doubt.html" class="sidebar-nav-link">
+                                <i class="fa-solid fa-circle-question"></i>
+                                <span>Ask a Doubt</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html?tab=questions" class="sidebar-nav-link">
+                                <i class="fa-solid fa-user-pen"></i>
+                                <span>My Questions</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html?tab=bookmarks" class="sidebar-nav-link">
+                                <i class="fa-solid fa-bookmark"></i>
+                                <span>Saved Doubts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html" class="sidebar-nav-link">
+                                <i class="fa-solid fa-id-card"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="sidebar-divider"></div>
+
+                    <ul class="sidebar-nav-list">
+                        <li>
+                            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-nav-link" style="color: var(--danger);">
+                                <i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Active Student Profile Pill in Sidebar -->
+                <div id="sidebar-user-info" class="sidebar-user-card" onclick="window.location.href='profile.html'" style="cursor: pointer;">
+                    <!-- Injected dynamically via main.js -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content View -->
+        <div class="app-main">
+            <!-- App Top Header -->
+            <header class="app-header">
+                <div class="app-header-left">
+                    <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" aria-label="Toggle sidebar menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 class="app-page-title">Student Dashboard</h2>
+                </div>
+
+                <div class="app-header-right">
+                    <!-- Notification Bell Dropdown -->
+                    <div class="notif-dropdown-wrapper">
+                        <button class="notif-bell-btn" id="notif-bell-btn" aria-label="Notifications">
+                            <i class="fa-regular fa-bell"></i>
+                            <span class="notif-badge" id="notif-badge" style="display: none;">0</span>
+                        </button>
+
+                        <div class="notif-dropdown" id="notif-dropdown">
+                            <div class="notif-header">
+                                <span>Peer Notifications</span>
+                                <button class="notif-clear-btn" onclick="Storage.markNotificationsRead(); this.closest('.notif-dropdown').classList.remove('show');">Mark all read</button>
+                            </div>
+                            <ul class="notif-list" id="notif-list">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- User Header Pill -->
+                    <div class="header-user-pill" id="header-user-pill">
+                        <!-- Populated dynamically via main.js -->
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <main class="app-content">
+                <!-- Welcome Banner -->
+                <section class="welcome-banner">
+                    <div class="welcome-text">
+                        <h1 id="dashboard-greeting">Good afternoon, Student! ðŸ‘‹</h1>
+                        <p id="dashboard-user-role">1st Year B.Tech â€¢ Computer Science & Engineering</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.95rem; opacity: 0.85;">
+                            "Ask Freely. Learn Together." Remember, no coding error is silly. Let's solve bugs together today!
+                        </p>
+                    </div>
+                    <div class="welcome-actions">
+                        <a href="ask-doubt.html" class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i> Ask a Doubt
+                        </a>
+                        <a href="explore.html" class="btn btn-secondary">
+                            <i class="fa-solid fa-magnifying-glass"></i> Browse Questions
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Statistics Metric Cards -->
+                <section class="stats-grid">
+                    <!-- Stat 1: Total Doubts -->
+                    <div class="stat-card">
+                        <div class="stat-card-icon stat-icon-blue">
+                            <i class="fa-solid fa-circle-question"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <h3 id="stat-total-doubts">0</h3>
+                            <p>Total Doubts</p>
+                        </div>
+                    </div>
+
+                    <!-- Stat 2: Solved Doubts -->
+                    <div class="stat-card">
+                        <div class="stat-card-icon stat-icon-green">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <h3 id="stat-solved-doubts">0</h3>
+                            <p>Solved Doubts</p>
+                        </div>
+                    </div>
+
+                    <!-- Stat 3: Unanswered Doubts -->
+                    <div class="stat-card">
+                        <div class="stat-card-icon stat-icon-amber">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <h3 id="stat-unanswered-doubts">0</h3>
+                            <p>Unanswered Doubts</p>
+                        </div>
+                    </div>
+
+                    <!-- Stat 4: Community Members -->
+                    <div class="stat-card">
+                        <div class="stat-card-icon stat-icon-purple">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-card-info">
+                            <h3 id="stat-total-members">350+</h3>
+                            <p>Community Members</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Dashboard 2-Column Layout -->
+                <div class="dashboard-grid">
+                    <!-- Left: Recent & Trending Doubts Feed -->
+                    <div>
+                        <div class="card-box">
+                            <div class="card-box-header">
+                                <h3 class="card-box-title">
+                                    <i class="fa-solid fa-fire" style="color: #f59e0b;"></i> Community Coding Doubts
+                                </h3>
+                                <div class="filter-tabs">
+                                    <button class="tab-btn dashboard-tab-btn active" data-filter="recent">Recent</button>
+                                    <button class="tab-btn dashboard-tab-btn" data-filter="trending">Trending</button>
+                                    <button class="tab-btn dashboard-tab-btn" data-filter="unanswered">Needs Answer</button>
+                                </div>
+                            </div>
+
+                            <!-- Doubts Feed List -->
+                            <div class="doubts-list" id="dashboard-doubts-feed">
+                                <!-- Rendered dynamically by dashboard.js -->
+                            </div>
+
+                            <div style="text-align: center; margin-top: 1.5rem;">
+                                <a href="explore.html" class="btn btn-secondary btn-sm">
+                                    View All Coding Questions <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Quick Tips & Platform Info -->
+                    <div>
+                        <!-- Quick Ask Card -->
+                        <div class="card-box" style="background: radial-gradient(circle at 10% 10%, #eff6ff 0%, #ffffff 80%); border-color: var(--primary-border);">
+                            <h3 class="card-box-title" style="color: var(--primary);">
+                                <i class="fa-solid fa-lightbulb"></i> Have a Lab Assignment Doubt?
+                            </h3>
+                            <p style="font-size: 0.88rem; color: var(--text-muted); margin: 0.75rem 0 1rem; line-height: 1.5;">
+                                Don't stay stuck for hours! Share your code or screenshot. Seniors and batchmates will help you spot syntax or logic errors quickly.
+                            </p>
+                            <a href="ask-doubt.html" class="btn btn-primary btn-sm" style="width: 100%;">
+                                <i class="fa-solid fa-plus"></i> Post Question Now
+                            </a>
+                        </div>
+
+                        <!-- Community Guidelines -->
+                        <div class="card-box">
+                            <h3 class="card-box-title" style="margin-bottom: 1rem;">
+                                <i class="fa-solid fa-heart-pulse" style="color: #ec4899;"></i> Peer Learning Code
+                            </h3>
+                            <ul class="guidelines-list">
+                                <li class="guidelines-item">
+                                    <i class="fa-solid fa-check-circle"></i>
+                                    <div><strong>No Judgement:</strong> Every student starts somewhere. Beginners are celebrated!</div>
+                                </li>
+                                <li class="guidelines-item">
+                                    <i class="fa-solid fa-user-secret"></i>
+                                    <div><strong>Anonymous Mode:</strong> Feeling hesitant? Toggle anonymous mode when asking.</div>
+                                </li>
+                                <li class="guidelines-item">
+                                    <i class="fa-solid fa-award"></i>
+                                    <div><strong>Mark Best Answer:</strong> Reward classmates who helped resolve your bug.</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

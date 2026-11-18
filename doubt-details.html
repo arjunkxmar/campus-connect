@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doubt Details & Discussion | CampusConnect - Doubt Exchange</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="brand-logo">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span>Campus<span class="brand-accent">Connect</span></span>
+                </a>
+            </div>
+
+            <div class="sidebar-content">
+                <div>
+                    <div class="sidebar-ask-btn-wrap">
+                        <a href="ask-doubt.html" class="btn btn-primary sidebar-ask-btn">
+                            <i class="fa-solid fa-plus-circle"></i> Ask a Doubt
+                        </a>
+                    </div>
+
+                    <ul class="sidebar-nav-list">
+                        <li>
+                            <a href="dashboard.html" class="sidebar-nav-link">
+                                <i class="fa-solid fa-gauge"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="explore.html" class="sidebar-nav-link active">
+                                <i class="fa-solid fa-compass"></i>
+                                <span>Explore Doubts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="ask-doubt.html" class="sidebar-nav-link">
+                                <i class="fa-solid fa-circle-question"></i>
+                                <span>Ask a Doubt</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html?tab=questions" class="sidebar-nav-link">
+                                <i class="fa-solid fa-user-pen"></i>
+                                <span>My Questions</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html?tab=bookmarks" class="sidebar-nav-link">
+                                <i class="fa-solid fa-bookmark"></i>
+                                <span>Saved Doubts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html" class="sidebar-nav-link">
+                                <i class="fa-solid fa-id-card"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="sidebar-divider"></div>
+
+                    <ul class="sidebar-nav-list">
+                        <li>
+                            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-nav-link" style="color: var(--danger);">
+                                <i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="sidebar-user-info" class="sidebar-user-card" onclick="window.location.href='profile.html'" style="cursor: pointer;">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Discussion Content -->
+        <div class="app-main">
+            <!-- App Header -->
+            <header class="app-header">
+                <div class="app-header-left">
+                    <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" aria-label="Toggle sidebar menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 class="app-page-title">Peer Discussion</h2>
+                </div>
+
+                <div class="app-header-right">
+                    <div class="notif-dropdown-wrapper">
+                        <button class="notif-bell-btn" id="notif-bell-btn" aria-label="Notifications">
+                            <i class="fa-regular fa-bell"></i>
+                            <span class="notif-badge" id="notif-badge" style="display: none;">0</span>
+                        </button>
+                        <div class="notif-dropdown" id="notif-dropdown">
+                            <div class="notif-header">
+                                <span>Peer Notifications</span>
+                                <button class="notif-clear-btn" onclick="Storage.markNotificationsRead(); this.closest('.notif-dropdown').classList.remove('show');">Mark all read</button>
+                            </div>
+                            <ul class="notif-list" id="notif-list"></ul>
+                        </div>
+                    </div>
+
+                    <div class="header-user-pill" id="header-user-pill"></div>
+                </div>
+            </header>
+
+            <!-- Main Discussion Body -->
+            <main class="app-content">
+                <div class="doubt-view-layout">
+                    <!-- Left Column: Question Details & Discussion Thread -->
+                    <div>
+                        <!-- Question Card -->
+                        <div class="doubt-details-card" id="doubt-details-container">
+                            <!-- Populated dynamically by doubts.js -->
+                        </div>
+
+                        <!-- Answers Section -->
+                        <div class="answers-container">
+                            <div class="answers-section-header">
+                                <h3 class="answers-count-title" id="answers-count-header">Classmate Answers</h3>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">
+                                    <i class="fa-solid fa-shield-halved" style="color: var(--success);"></i> Peer Peer-Reviewed
+                                </span>
+                            </div>
+
+                            <!-- Answers List Feed -->
+                            <div id="answers-feed">
+                                <!-- Populated dynamically by doubts.js -->
+                            </div>
+
+                            <!-- Post an Answer Form Card -->
+                            <div class="post-answer-card">
+                                <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">
+                                    <i class="fa-solid fa-pen-to-square" style="color: var(--primary);"></i> Your Solution or Explanation
+                                </h3>
+                                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                                    Help your classmate understand the concept or fix their code. Keep explanations kind and clear.
+                                </p>
+
+                                <form id="post-answer-form">
+                                    <div class="form-group">
+                                        <label class="form-label" for="answer-text">
+                                            Explanation & Solution <span class="required">*</span>
+                                        </label>
+                                        <textarea 
+                                            id="answer-text" 
+                                            class="form-input" 
+                                            rows="4" 
+                                            placeholder="Write your explanation here... Mention why the bug occurred and how your fix resolves it." 
+                                            required
+                                        ></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="answer-code">
+                                            Corrected Code Snippet <span style="font-weight: 400; color: var(--text-subtle);">(Optional)</span>
+                                        </label>
+                                        <textarea 
+                                            id="answer-code" 
+                                            class="code-textarea" 
+                                            style="min-height: 120px;"
+                                            placeholder="// Provide the fixed or improved code snippet here..."
+                                        ></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa-solid fa-paper-plane"></i> Submit Answer & Help Peer
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Question Actions & Community Guidelines -->
+                    <div>
+                        <!-- Best Answer Guide Card -->
+                        <div class="card-box" style="border-top: 4px solid var(--success);">
+                            <h3 class="card-box-title" style="margin-bottom: 0.75rem;">
+                                <i class="fa-solid fa-trophy" style="color: #f59e0b;"></i> Best Answer Bounty
+                            </h3>
+                            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.75rem;">
+                                If you asked this question, you can mark the answer that resolved your issue as the <strong>Best Answer</strong>.
+                            </p>
+                            <p style="font-size: 0.85rem; color: var(--text-subtle);">
+                                This helps future juniors facing the same problem quickly identify the verified solution!
+                            </p>
+                        </div>
+
+                        <!-- Quick Navigation Card -->
+                        <div class="card-box">
+                            <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem;">
+                                <i class="fa-solid fa-compass" style="color: var(--primary);"></i> More Questions
+                            </h4>
+                            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                <a href="explore.html" class="btn btn-secondary btn-sm" style="justify-content: flex-start;">
+                                    <i class="fa-solid fa-list"></i> Browse All Doubts
+                                </a>
+                                <a href="ask-doubt.html" class="btn btn-primary btn-sm" style="justify-content: flex-start;">
+                                    <i class="fa-solid fa-plus"></i> Ask Another Doubt
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/doubts.js"></script>
+</body>
+</html>

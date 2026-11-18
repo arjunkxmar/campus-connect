@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login | CampusConnect - Doubt Exchange</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+
+    <!-- Mini Topbar -->
+    <header class="site-nav">
+        <div class="container nav-inner">
+            <a href="index.html" class="brand-logo">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <span>Campus<span class="brand-accent">Connect</span></span>
+                <span class="brand-tag">Doubt Exchange</span>
+            </a>
+
+            <div>
+                <a href="explore.html" class="btn btn-ghost btn-sm">Explore Doubts</a>
+                <a href="signup.html" class="btn btn-primary btn-sm">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Auth Form -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Welcome Back, Student</h1>
+                <p class="auth-subtitle">Sign in with your college credentials to join your classmates.</p>
+            </div>
+
+            <!-- College Trust Badge -->
+            <div class="college-trust-badge">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div>
+                    <strong>College-Verified Space</strong>
+                    <div>Strictly for B.Tech students & peer mentors.</div>
+                </div>
+            </div>
+
+            <form id="login-form">
+                <!-- College Email Input -->
+                <div class="form-group">
+                    <label class="form-label" for="login-email">
+                        College Email Address <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <input 
+                            type="email" 
+                            id="login-email" 
+                            class="form-input" 
+                            placeholder="e.g. arjun.btech24@college.edu" 
+                            required
+                        >
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+                </div>
+
+                <!-- Password Input -->
+                <div class="form-group">
+                    <label class="form-label" for="login-password">
+                        Password <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <input 
+                            type="password" 
+                            id="login-password" 
+                            class="form-input" 
+                            placeholder="Enter your password" 
+                            required
+                        >
+                        <i class="fa-solid fa-lock"></i>
+                        <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember-me" checked>
+                        <span>Remember my session</span>
+                    </label>
+                    <a href="javascript:void(0)" onclick="alert('For this college prototype demo, use password123 with any registered college email or click the 1-Click Demo Fill below!')" style="font-size: 0.82rem;">Forgot password?</a>
+                </div>
+
+                <!-- Error Message Container -->
+                <div id="login-error" class="error-feedback" style="margin-bottom: 1rem;"></div>
+
+                <button type="submit" class="btn btn-primary btn-auth-submit">
+                    <i class="fa-solid fa-right-to-bracket"></i> Sign In to CampusConnect
+                </button>
+            </form>
+
+            <!-- Quick Demo Fill Card (For Evaluator Convenience) -->
+            <div class="demo-credentials-card">
+                <div class="demo-credentials-title">
+                    <span><i class="fa-solid fa-wand-magic-sparkles"></i> Evaluator Quick-Test</span>
+                    <span class="badge badge-primary">1-Click Fill</span>
+                </div>
+                <button type="button" id="btn-quick-demo" class="demo-quick-btn">
+                    <span><strong>Arjun Sharma</strong> (1st Year CSE)</span>
+                    <i class="fa-solid fa-arrow-turn-down-left"></i>
+                </button>
+            </div>
+
+            <!-- Simulation Disclaimer -->
+            <div class="sim-notice-card">
+                <strong><i class="fa-solid fa-circle-info"></i> Design Thinking Prototype Note:</strong>
+                This frontend application stores session and doubt data in browser <code>localStorage</code>. Email verification and authentication are simulated client-side for demonstration.
+            </div>
+
+            <div class="auth-footer">
+                Don't have an account yet? <a href="signup.html">Register as Student</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

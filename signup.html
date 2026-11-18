@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration | CampusConnect - Doubt Exchange</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+
+    <!-- Mini Topbar -->
+    <header class="site-nav">
+        <div class="container nav-inner">
+            <a href="index.html" class="brand-logo">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <span>Campus<span class="brand-accent">Connect</span></span>
+                <span class="brand-tag">Doubt Exchange</span>
+            </a>
+
+            <div>
+                <a href="explore.html" class="btn btn-ghost btn-sm">Explore Doubts</a>
+                <a href="login.html" class="btn btn-outline btn-sm">Log In</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Registration Container -->
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Join CampusConnect</h1>
+                <p class="auth-subtitle">Create your college account to ask doubts, share solutions, and learn together.</p>
+            </div>
+
+            <!-- College Trust Badge -->
+            <div class="college-trust-badge">
+                <i class="fa-solid fa-user-graduate"></i>
+                <div>
+                    <strong>College Peer Network</strong>
+                    <div>Connect with batchmates across your engineering departments.</div>
+                </div>
+            </div>
+
+            <form id="signup-form">
+                <!-- Full Student Name -->
+                <div class="form-group">
+                    <label class="form-label" for="signup-name">
+                        Student Full Name <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <input 
+                            type="text" 
+                            id="signup-name" 
+                            class="form-input" 
+                            placeholder="e.g. Rahul Verma" 
+                            required
+                        >
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                </div>
+
+                <!-- College Email Address -->
+                <div class="form-group">
+                    <label class="form-label" for="signup-email">
+                        College Email Address <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <input 
+                            type="email" 
+                            id="signup-email" 
+                            class="form-input" 
+                            placeholder="e.g. rahul.btech24@college.edu" 
+                            required
+                        >
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+                    <span class="form-hint">Must be your institutional student email for simulated verification</span>
+                </div>
+
+                <!-- Branch & Year Row -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="signup-branch">Branch</label>
+                        <select id="signup-branch" class="form-input">
+                            <option value="Computer Science & Engineering">Computer Science (CSE)</option>
+                            <option value="Information Technology">Information Technology (IT)</option>
+                            <option value="AI & Data Science">AI & Data Science</option>
+                            <option value="Electronics & Communication">Electronics & Comm (ECE)</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="signup-year">Academic Year</label>
+                        <select id="signup-year" class="form-input">
+                            <option value="1st Year B.Tech">1st Year (Freshman)</option>
+                            <option value="2nd Year B.Tech">2nd Year (Sophomore)</option>
+                            <option value="3rd Year B.Tech">3rd Year (Junior)</option>
+                            <option value="4th Year B.Tech">4th Year (Senior)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label class="form-label" for="signup-password">
+                        Password <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <input 
+                            type="password" 
+                            id="signup-password" 
+                            class="form-input" 
+                            placeholder="Create a password (min 6 characters)" 
+                            required
+                        >
+                        <i class="fa-solid fa-lock"></i>
+                        <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label class="form-label" for="signup-confirm-password">
+                        Confirm Password <span class="required">*</span>
+                    </label>
+                    <div class="input-with-icon">
+                        <input 
+                            type="password" 
+                            id="signup-confirm-password" 
+                            class="form-input" 
+                            placeholder="Re-enter your password" 
+                            required
+                        >
+                        <i class="fa-solid fa-shield-cat"></i>
+                    </div>
+                </div>
+
+                <!-- Error Container -->
+                <div id="signup-error" class="error-feedback" style="margin-bottom: 1rem;"></div>
+
+                <button type="submit" class="btn btn-primary btn-auth-submit">
+                    <i class="fa-solid fa-arrow-right"></i> Verify Email & Register
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="login.html">Log In Here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simulated College Email OTP Verification Modal -->
+    <div id="verification-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fa-solid fa-envelope-circle-check" style="color: var(--primary); margin-right: 0.5rem;"></i>
+                    College Email Verification
+                </div>
+                <button type="button" class="modal-close" onclick="closeVerificationModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="verification-sim-tip">
+                    <strong><i class="fa-solid fa-flask"></i> Design Thinking Prototype Simulation</strong><br>
+                    In this frontend demo, email verification is simulated client-side. No actual email server is required.
+                </div>
+
+                <p style="text-align: center; font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                    We sent a 4-digit college verification code to:
+                </p>
+                <p style="text-align: center; font-weight: 700; color: var(--text-navy); font-size: 1.05rem;" id="modal-target-email">
+                    student@college.edu
+                </p>
+
+                <!-- OTP inputs -->
+                <div class="otp-inputs">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp-1" value="2">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp-2" value="0">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp-3" value="2">
+                    <input type="text" maxlength="1" class="otp-digit" id="otp-4" value="6">
+                </div>
+
+                <p style="text-align: center; font-size: 0.8rem; color: var(--text-subtle);">
+                    Default demo code: <strong>2 0 2 6</strong> (pre-filled for your convenience)
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeVerificationModal()">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="confirmVerification()">
+                    <i class="fa-solid fa-check"></i> Complete Student Registration
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

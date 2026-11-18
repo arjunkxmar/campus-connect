@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask a Coding Doubt | CampusConnect - Doubt Exchange</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+    <div class="app-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="app-sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="brand-logo">
+                    <div class="brand-icon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <span>Campus<span class="brand-accent">Connect</span></span>
+                </a>
+            </div>
+
+            <div class="sidebar-content">
+                <div>
+                    <div class="sidebar-ask-btn-wrap">
+                        <a href="ask-doubt.html" class="btn btn-primary sidebar-ask-btn">
+                            <i class="fa-solid fa-plus-circle"></i> Ask a Doubt
+                        </a>
+                    </div>
+
+                    <ul class="sidebar-nav-list">
+                        <li>
+                            <a href="dashboard.html" class="sidebar-nav-link">
+                                <i class="fa-solid fa-gauge"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="explore.html" class="sidebar-nav-link">
+                                <i class="fa-solid fa-compass"></i>
+                                <span>Explore Doubts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="ask-doubt.html" class="sidebar-nav-link active">
+                                <i class="fa-solid fa-circle-question"></i>
+                                <span>Ask a Doubt</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html?tab=questions" class="sidebar-nav-link">
+                                <i class="fa-solid fa-user-pen"></i>
+                                <span>My Questions</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html?tab=bookmarks" class="sidebar-nav-link">
+                                <i class="fa-solid fa-bookmark"></i>
+                                <span>Saved Doubts</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="profile.html" class="sidebar-nav-link">
+                                <i class="fa-solid fa-id-card"></i>
+                                <span>Profile</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="sidebar-divider"></div>
+
+                    <ul class="sidebar-nav-list">
+                        <li>
+                            <a href="javascript:void(0)" onclick="handleLogout()" class="sidebar-nav-link" style="color: var(--danger);">
+                                <i class="fa-solid fa-right-from-bracket" style="color: var(--danger);"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="sidebar-user-info" class="sidebar-user-card" onclick="window.location.href='profile.html'" style="cursor: pointer;">
+                    <!-- Injected dynamically -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Form View -->
+        <div class="app-main">
+            <!-- App Header -->
+            <header class="app-header">
+                <div class="app-header-left">
+                    <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" aria-label="Toggle sidebar menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2 class="app-page-title">Ask a Coding Question</h2>
+                </div>
+
+                <div class="app-header-right">
+                    <div class="notif-dropdown-wrapper">
+                        <button class="notif-bell-btn" id="notif-bell-btn" aria-label="Notifications">
+                            <i class="fa-regular fa-bell"></i>
+                            <span class="notif-badge" id="notif-badge" style="display: none;">0</span>
+                        </button>
+                        <div class="notif-dropdown" id="notif-dropdown">
+                            <div class="notif-header">
+                                <span>Peer Notifications</span>
+                                <button class="notif-clear-btn" onclick="Storage.markNotificationsRead(); this.closest('.notif-dropdown').classList.remove('show');">Mark all read</button>
+                            </div>
+                            <ul class="notif-list" id="notif-list"></ul>
+                        </div>
+                    </div>
+
+                    <div class="header-user-pill" id="header-user-pill"></div>
+                </div>
+            </header>
+
+            <!-- Form Content -->
+            <main class="app-content">
+                <div class="ask-layout">
+                    <!-- Left: Main Form -->
+                    <div class="form-card">
+                        <div style="margin-bottom: 1.5rem;">
+                            <h3 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.25rem;">Describe Your Coding Doubt</h3>
+                            <p style="color: var(--text-muted); font-size: 0.92rem;">
+                                Be specific and provide code snippets or error traces so your classmates can help you faster.
+                            </p>
+                        </div>
+
+                        <form id="ask-doubt-form">
+                            <!-- Question Title -->
+                            <div class="form-group">
+                                <label class="form-label" for="doubt-title">
+                                    Question Title <span class="required">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="doubt-title" 
+                                    class="form-input" 
+                                    placeholder="e.g. Why does my C program give Segmentation Fault when inserting node in linked list?" 
+                                    required
+                                >
+                                <span class="form-hint">Summarize your problem in one clear sentence.</span>
+                            </div>
+
+                            <!-- Programming Language -->
+                            <div class="form-group">
+                                <label class="form-label" for="doubt-language">
+                                    Programming Language / Subject <span class="required">*</span>
+                                </label>
+                                <select id="doubt-language" class="form-input" required>
+                                    <option value="C">C Language</option>
+                                    <option value="Python">Python</option>
+                                    <option value="Java">Java</option>
+                                    <option value="DSA">Data Structures & Algorithms (DSA)</option>
+                                    <option value="Web Development">Web Development (HTML/CSS/JS)</option>
+                                    <option value="C++">C++</option>
+                                    <option value="SQL">SQL & Database</option>
+                                </select>
+                            </div>
+
+                            <!-- Detailed Description -->
+                            <div class="form-group">
+                                <label class="form-label" for="doubt-description">
+                                    Detailed Explanation <span class="required">*</span>
+                                </label>
+                                <textarea 
+                                    id="doubt-description" 
+                                    class="form-input" 
+                                    rows="4" 
+                                    placeholder="Explain what you are trying to accomplish, what you expected to happen, and what actually occurred..." 
+                                    required
+                                ></textarea>
+                            </div>
+
+                            <!-- Code Snippet -->
+                            <div class="form-group">
+                                <label class="form-label" for="doubt-code">
+                                    Code Snippet <span style="font-weight: 400; color: var(--text-subtle);">(Optional but recommended)</span>
+                                </label>
+                                <textarea 
+                                    id="doubt-code" 
+                                    class="code-textarea" 
+                                    placeholder="// Paste your relevant code here (with comments if helpful)
+#include <stdio.h>
+int main() {
+    // your code...
+}"
+                                ></textarea>
+                                <span class="form-hint">Tip: Only paste the function or lines where the error is occurring.</span>
+                            </div>
+
+                            <!-- Error Message -->
+                            <div class="form-group">
+                                <label class="form-label" for="doubt-error">
+                                    Error Output / Terminal Message <span style="font-weight: 400; color: var(--text-subtle);">(Optional)</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="doubt-error" 
+                                    class="form-input" 
+                                    placeholder="e.g. IndentationError: unexpected indent or Segmentation fault (core dumped)"
+                                >
+                            </div>
+
+                            <!-- Screenshot Upload Dropzone -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    Attach Screenshot / Error Output <span style="font-weight: 400; color: var(--text-subtle);">(Optional)</span>
+                                </label>
+
+                                <input type="file" id="screenshot-file-input" accept="image/*" style="display: none;">
+                                
+                                <div class="image-upload-dropzone" id="screenshot-dropzone">
+                                    <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                                    <div class="upload-text">Click to upload a code screenshot or terminal capture</div>
+                                    <div class="upload-subtext">Supports PNG, JPG, JPEG (Max 3MB)</div>
+                                </div>
+
+                                <!-- Image Preview Container -->
+                                <div id="image-preview-wrapper" class="image-preview-wrapper" style="display: none;">
+                                    <img id="image-preview-img" class="image-preview-img" alt="Screenshot Preview">
+                                    <button type="button" id="remove-image-btn" class="remove-image-btn" title="Remove screenshot">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Anonymous Posting Mode Switch -->
+                            <div class="anon-toggle-card">
+                                <div class="anon-text-wrap">
+                                    <i class="fa-solid fa-user-secret"></i>
+                                    <div>
+                                        <div class="anon-title">Anonymous Student Mode</div>
+                                        <div class="anon-desc">Hide your name and avatar from classmates. Ask without hesitation!</div>
+                                    </div>
+                                </div>
+
+                                <label class="switch">
+                                    <input type="checkbox" id="anonymous-toggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
+                            <div id="anon-author-preview" style="font-size: 0.82rem; font-weight: 600; margin-bottom: 1.5rem; color: var(--primary);">
+                                Posting with your student profile
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fa-solid fa-paper-plane"></i> Submit Doubt to Classmates
+                                </button>
+                                <a href="dashboard.html" class="btn btn-ghost">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Right Sidebar: Tips for asking questions -->
+                    <div>
+                        <div class="card-box" style="border-top: 4px solid var(--primary);">
+                            <h3 class="card-box-title" style="margin-bottom: 1rem;">
+                                <i class="fa-solid fa-graduation-cap" style="color: var(--primary);"></i> How to Get Quick Answers
+                            </h3>
+                            <ul class="guidelines-list">
+                                <li class="guidelines-item">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <div><strong>Paste the exact error:</strong> Mention the line number and compiler error code.</div>
+                                </li>
+                                <li class="guidelines-item">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <div><strong>Keep snippets minimal:</strong> Share only the function or loop with the issue.</div>
+                                </li>
+                                <li class="guidelines-item">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <div><strong>Explain what you expected:</strong> E.g. "I expected output 10, but got 0".</div>
+                                </li>
+                                <li class="guidelines-item">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <div><strong>Be polite:</strong> Mark the best answer once your problem is solved!</div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="card-box" style="background: var(--bg-alt);">
+                            <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-navy);">
+                                <i class="fa-solid fa-shield-halved" style="color: var(--secondary);"></i> Safe Space Guarantee
+                            </h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+                                "There are no silly questions in computer science." Every senior was once a beginner learning loops and pointers. Ask freely!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/doubts.js"></script>
+</body>
+</html>
