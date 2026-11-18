@@ -12,3 +12,4 @@ echo CampusConnect is now open!
 echo You can explore questions, ask doubts, and test features.
 echo.
 pause
+
