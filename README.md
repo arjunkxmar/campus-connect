@@ -10,10 +10,12 @@
 **CampusConnect – Doubt Exchange** is a college-only peer-learning web platform engineered specifically for B.Tech engineering students. First-year undergraduates frequently struggle with syntax errors, pointer concepts, runtime exceptions, and lab assignments, yet often hesitate to ask in public forums or large lecture halls for fear of judgment. 
 
 CampusConnect solves this through:
-- **Anonymous Mode:** Students can ask beginner questions without revealing their identity.
-- **College-Verified Community:** A private, trusted environment for engineering batchmates.
-- **Syntax-Formatted Code & Terminal Output:** Clear presentation of code and stack traces.
-- **Best Answer Bounty & Peer Upvotes:** Transparent recognition for classmates who help debug.
+- **Common Shared Doubt Feed:** Every student's questions are immediately visible to all registered classmates on the shared Explore Doubts feed.
+- **Anonymous Mode:** Students can ask beginner questions without revealing their identity or roll number.
+- **Peer Answering & Follow-Up Discussions:** Any classmate can contribute solutions, hints, or code corrections.
+- **Author-Only Best Answer System:** Only the student who posted the question can verify and mark a solution as the winning Best Answer, pinning it to the top with a trophy badge.
+- **Upvote Recognition:** Students upvote helpful doubts and solutions, building peer recognition.
+- **College-Verified Protected Access:** Strict route guards ensure only logged-in college students can access internal discussion portals.
 
 ---
 
@@ -27,6 +29,7 @@ CampusConnect solves this through:
   - Fully responsive grid and flexbox layout for mobile, tablet, and desktop
 - **Logic:** Vanilla JavaScript (`js/storage.js`, `js/main.js`, `js/auth.js`, `js/dashboard.js`, `js/doubts.js`)
 - **Persistence:** Browser `localStorage` for persisting demo users, doubts, answers, upvotes, bookmarks, and notifications.
+- **Real-Time Updates:** Same-browser custom events (`campusconnect:data_changed`) and cross-tab `window.addEventListener('storage', ...)` synchronization.
 - **Icons:** Font Awesome 6 CDN (`fa-solid`, `fa-regular`)
 - **Fonts:** Google Fonts (*Outfit*, *Plus Jakarta Sans*, *Fira Code*)
 
@@ -34,36 +37,48 @@ CampusConnect solves this through:
 
 ## 3. How to Run
 
-1. Open the project folder in File Explorer.
-2. Double-click **`index.html`** to open it in any web browser (Chrome, Edge, Firefox, Safari).
-3. **No Node.js, npm, or build tools required.** The application works out of the box.
+### Option 1: 1-Click Launch
+Double-click **`run.bat`** or **`index.html`** in File Explorer. It opens instantly in your default web browser!
+
+### Option 2: Local HTTP Server
+```bash
+python -m http.server 8000
+```
+Then open: **`http://localhost:8000`**
 
 ---
 
-## 4. Demo Accounts & Evaluator Testing
+## 4. Multi-Student Peer Testing (1-Click Accounts)
 
-The app comes preloaded with an active session for **Arjun Sharma** (1st Year CSE) and pre-seeded realistic questions and answers across C, Python, Java, DSA, and Web Development.
+On **`login.html`**, quick-fill buttons are provided for instant evaluator testing:
 
-### Quick Testing Credentials:
-- **Student 1 (Preloaded Active):**
+- **Student A (1st Year CSE):**
   - Email: `arjun.btech24@college.edu`
   - Password: `password123`
-- **Student 2 (Senior Mentor):**
+- **Student B (2nd Year Senior Mentor):**
   - Email: `priya.btech23@college.edu`
   - Password: `password123`
-- **1-Click Quick Fill:** On `login.html`, click the **"Evaluator Quick-Test"** button to auto-fill credentials instantly!
+
+You can also register brand-new students on `signup.html` with simulated 4-digit college OTP verification (`2026`).
 
 ---
 
-## 5. Pre-seeded Sample Doubts
+## 5. Verified Multi-User Test Scenarios
 
-1. **Why is i <= 5 out of bounds in C?** (C Programming, Solved, Best Answer marked)
-2. **Segmentation fault in linked list insertion at end** (DSA, Solved, Anonymous Mode demo)
-3. **IndentationError: unindent does not match any outer indentation level in Python** (Python, Solved)
-4. **Difference between array and structure in C with practical examples** (C Viva Concept, Solved)
-5. **How does recursion work in programming? Why does my recursive function never stop?** (Python, Solved, Anonymous Mode)
-6. **Why is my Java NullPointerException occurring when accessing student name?** (Java, Unsolved)
-7. **How to properly connect HTML, CSS, and JavaScript in a project?** (Web Dev, Needs answer)
+The platform has passed all 10 automated peer-collaboration scenarios:
+
+| Scenario | Tested Action | Verified Outcome |
+|---|---|---|
+| **TEST 1** | Register Student A and log in | Session saved, redirected to Dashboard displaying Student A's name. |
+| **TEST 2** | Student A posts a coding doubt | Saved to shared collection `campusconnect_doubts`. |
+| **TEST 3** | Log out and log in as Student B | Session cleanly cleared, Student B authenticated. |
+| **TEST 4** | Student B explores doubts | Student A's new doubt appears immediately in the common feed. |
+| **TEST 5** | Student B submits an answer | Saved with Student B's name, avatar, and timestamp. |
+| **TEST 6** | Log out and log in as Student A | Student A's session restored. |
+| **TEST 7** | Student A reviews and marks Best Answer | Solution verified, marked with trophy banner, pinned to top. |
+| **TEST 8** | Student B verifies Solved status | Solved badge and Best Answer visible; unauthorized toggle blocked. |
+| **TEST 9** | Page reload & persistence | All questions, answers, and states preserved in `localStorage`. |
+| **TEST 10** | Shared collection integrity | Verified single unified collection accessible to all students. |
 
 ---
 
@@ -73,13 +88,16 @@ The app comes preloaded with an active session for **Arjun Sharma** (1st Year CS
 CampusConnect/
 │
 ├── index.html            # Public landing page with features & how it works
-├── login.html            # Student login with 1-click test credentials
+├── login.html            # Student login with 1-click test credentials (Student A / Student B)
 ├── signup.html           # Student registration with simulated college email OTP modal
 ├── dashboard.html        # Main student portal with metrics, feed, & quick ask
-├── explore.html          # Real-time search, category filters, & question cards
+├── explore.html          # Common doubts feed with real-time search & language pills
 ├── ask-doubt.html        # Form with code editor, error trace, screenshot preview, & anonymous switch
-├── doubt-details.html    # Full question discussion, copy code button, & best answer toggle
+├── doubt-details.html    # Full question thread with copy code, answers, & best answer toggle
 ├── profile.html          # Student stats, edit profile modal, questions & saved bookmarks
+├── run.bat               # 1-click launcher for Windows
+├── package.json          # Project descriptor & Vercel deployment metadata
+├── vercel.json           # Vercel deployment configuration (clean URLs & caching)
 │
 ├── css/
 │   ├── style.css         # Design system, typography, buttons, toasts, modals
@@ -87,10 +105,10 @@ CampusConnect/
 │   └── dashboard.css     # Sidebar layout, cards, discussion feed, filters
 │
 ├── js/
-│   ├── storage.js        # LocalStorage data engine, seed dataset, CRUD, toasts
-│   ├── main.js           # Navigation sync, notification bell, clipboard copy
-│   ├── auth.js           # Login, validation, simulated OTP verification
-│   ├── dashboard.js      # Dashboard counters, recent/trending filters
+│   ├── storage.js        # LocalStorage data engine, seed dataset, CRUD, toasts, events
+│   ├── main.js           # Navigation sync, notification bell, clipboard copy, logout
+│   ├── auth.js           # Login, validation, simulated OTP verification, redirects
+│   ├── dashboard.js      # Dashboard counters, recent/trending filters, live listeners
 │   └── doubts.js         # Explore search, ask form, details thread, profile tabs
 │
 └── assets/
@@ -99,13 +117,12 @@ CampusConnect/
 
 ---
 
-## 7. Key Features Implemented
+## 7. Cloud Migration Architecture (Firebase Firestore)
 
-- [x] **Universal Realtime Search:** Filters simultaneously across question title, body text, programming language, and error terminal output.
-- [x] **Anonymous Student Mode:** Strips user name and avatar, displaying a discreet "Anonymous Student" badge.
-- [x] **Screenshot Upload & Preview:** Uses the HTML5 `FileReader` API to preview attached screenshots before posting.
-- [x] **Syntax-Formatted Code Blocks:** Styled with dark monospace themes and 1-click "Copy Code" clipboard integration.
-- [x] **Owner-Only "Mark as Best Answer":** Only the student who posted the question can verify and mark a solution as the winning Best Answer.
-- [x] **Toast Feedback & Modals:** Non-intrusive feedback toasts for upvotes, saves, edits, and answers.
-- [x] **Simulated College Email Verification:** Interactive 4-digit verification modal created specifically for the Design Thinking prototype demonstration.
+The codebase has been designed with modular, asynchronous abstractions in `js/storage.js`. To scale from prototype `localStorage` to multi-device cloud synchronization:
+- `Storage.getDoubts()` maps to `db.collection('doubts').orderBy('createdAt', 'desc').onSnapshot()`
+- `Storage.saveDoubt()` maps to `db.collection('doubts').add(...)`
+- `Storage.addAnswer()` maps to `db.collection('doubts').doc(id).collection('answers').add(...)`
+- `Storage.toggleUpvoteDoubt()` maps to `db.collection('doubts').doc(id).update({ upvotes: arrayUnion / arrayRemove })`
 
+This ensures that the frontend UI, styles, and page controllers require zero structural redesign when connecting a cloud database!
