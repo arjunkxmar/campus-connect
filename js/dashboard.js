@@ -5,6 +5,12 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
+
+    // Real-time synchronization within window and cross-tabs
+    window.addEventListener('campusconnect:data_changed', () => {
+        renderDashboardStats();
+        renderDashboardDoubts(currentDashboardFilter);
+    });
 });
 
 function initDashboard() {
@@ -164,6 +170,10 @@ function renderDashboardDoubts(filterType = 'recent') {
                         <button class="doubt-action-btn ${isBookmarked ? 'bookmarked' : ''}" onclick="handleDashboardBookmark('${doubt.id}')" title="Bookmark">
                             <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
                         </button>
+
+                        <a href="doubt-details.html?id=${doubt.id}" class="btn btn-primary btn-sm" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                            View Discussion <i class="fa-solid fa-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
             </div>

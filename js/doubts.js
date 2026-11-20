@@ -8,6 +8,23 @@ document.addEventListener('DOMContentLoaded', () => {
     initAskDoubtPage();
     initDoubtDetailsPage();
     initProfilePage();
+
+    // Real-time synchronization across events & browser tabs
+    window.addEventListener('campusconnect:data_changed', () => {
+        if (document.getElementById('explore-doubts-feed')) {
+            renderExploreDoubts();
+        }
+        if (document.getElementById('doubt-details-container') && currentDoubtId) {
+            renderDoubtDetails();
+        }
+        if (document.getElementById('profile-view-wrap')) {
+            const currentUser = Storage.getCurrentUser();
+            if (currentUser) {
+                renderProfileStats(currentUser.id);
+                renderProfileTabContent(currentUser, currentProfileTab);
+            }
+        }
+    });
 });
 
 // Helper: Language CSS classes
@@ -33,6 +50,11 @@ let exploreSelectedStatus = 'all';
 function initExplorePage() {
     const exploreContainer = document.getElementById('explore-doubts-feed');
     if (!exploreContainer) return;
+
+    // Route Protection: must be logged in to view doubts
+    if (!Storage.requireAuth('explore.html')) {
+        return;
+    }
 
     const searchInput = document.getElementById('explore-search-input');
     const searchClearBtn = document.getElementById('search-clear-btn');
@@ -218,6 +240,10 @@ function renderExploreDoubts() {
                         <button class="doubt-action-btn ${isBookmarked ? 'bookmarked' : ''}" onclick="handleExploreBookmark('${doubt.id}')" title="Bookmark">
                             <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
                         </button>
+
+                        <a href="doubt-details.html?id=${doubt.id}" class="btn btn-primary btn-sm" style="padding: 0.35rem 0.85rem; font-size: 0.82rem;">
+                            <i class="fa-regular fa-comments"></i> View Discussion
+                        </a>
                     </div>
                 </div>
             </div>
@@ -250,13 +276,11 @@ function initAskDoubtPage() {
     const form = document.getElementById('ask-doubt-form');
     if (!form) return;
 
-    // Check login
-    const currentUser = Storage.getCurrentUser();
-    if (!currentUser) {
-        showToast('Please log in to post your doubt', 'warning');
-        setTimeout(() => window.location.href = 'login.html', 1000);
+    // Route Protection: must be logged in to ask a doubt
+    if (!Storage.requireAuth('ask-doubt.html')) {
         return;
     }
+    const currentUser = Storage.getCurrentUser();
 
     // Image file upload & preview
     const fileInput = document.getElementById('screenshot-file-input');
@@ -381,9 +405,14 @@ function initDoubtDetailsPage() {
     const urlParams = new URLSearchParams(window.location.search);
     currentDoubtId = urlParams.get('id');
 
+    // Route Protection: must be logged in to view doubt discussion
+    if (!Storage.requireAuth(currentDoubtId ? `doubt-details.html?id=${currentDoubtId}` : 'explore.html')) {
+        return;
+    }
+
     if (!currentDoubtId) {
         showToast('No doubt specified.', 'error');
-        setTimeout(() => window.location.href = 'explore.html', 1000);
+        setTimeout(() => window.location.href = 'explore.html', 800);
         return;
     }
 
@@ -692,11 +721,12 @@ function initProfilePage() {
     const profileWrap = document.getElementById('profile-view-wrap');
     if (!profileWrap) return;
 
-    const currentUser = Storage.getCurrentUser();
-    if (!currentUser) {
-        window.location.href = 'login.html';
+    // Route Protection: must be logged in to view profile
+    if (!Storage.requireAuth('profile.html')) {
         return;
     }
+
+    const currentUser = Storage.getCurrentUser();
 
     renderProfileHeader(currentUser);
     renderProfileStats(currentUser.id);

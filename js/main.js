@@ -8,6 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     initNotificationDropdown();
     initCodeCopyButtons();
     initMobileSidebarToggle();
+
+    // Listen for real-time data changes across components and browser tabs
+    window.addEventListener('campusconnect:data_changed', (e) => {
+        initAppNavbar();
+        if (typeof refreshNotificationDisplay === 'function') {
+            refreshNotificationDisplay();
+        }
+    });
 });
 
 // ------------------------------------------
@@ -200,8 +208,8 @@ function handleLogout() {
         Storage.logout();
         showToast('Logged out successfully', 'info');
         setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 600);
+            window.location.href = 'login.html';
+        }, 500);
     }
 }
 

@@ -4,6 +4,13 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // If student is already logged in, redirect them to dashboard
+    const currentUser = Storage.getCurrentUser();
+    if (currentUser && !window.location.search.includes('logout=true')) {
+        window.location.href = 'dashboard.html';
+        return;
+    }
+
     initLoginForm();
     initSignupForm();
     initQuickDemoFill();
@@ -65,9 +72,18 @@ function initLoginForm() {
         const result = Storage.login(email, password);
         if (result.success) {
             showToast(`Welcome back, ${result.user.name}! 👋`, 'success');
+            
+            // Check redirect parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const redirectTarget = urlParams.get('redirect');
+
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 800);
+                if (redirectTarget) {
+                    window.location.href = decodeURIComponent(redirectTarget);
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
+            }, 600);
         } else {
             if (errorFeedback) {
                 errorFeedback.textContent = result.message;
@@ -79,22 +95,42 @@ function initLoginForm() {
 }
 
 // ------------------------------------------
-// 3. Quick Demo Fill (Helper for Evaluators)
+// 3. Quick Demo Fill (Helper for Evaluators & Testing)
 // ------------------------------------------
 function initQuickDemoFill() {
-    const quickFillBtn = document.getElementById('btn-quick-demo');
-    if (!quickFillBtn) return;
+    // Student A (Arjun Sharma)
+    const quickFillBtnA = document.getElementById('btn-quick-demo');
+    if (quickFillBtnA) {
+        quickFillBtnA.addEventListener('click', () => {
+            fillCredentials('arjun.btech24@college.edu', 'password123', 'Student A: Arjun Sharma (1st Year CSE)');
+        });
+    }
 
-    quickFillBtn.addEventListener('click', () => {
+    // Student B (Priya Patel)
+    const quickFillBtnB = document.getElementById('btn-quick-demo-b');
+    if (quickFillBtnB) {
+        quickFillBtnB.addEventListener('click', () => {
+            fillCredentials('priya.btech23@college.edu', 'password123', 'Student B: Priya Patel (2nd Year Senior)');
+        });
+    }
+
+    // Student C (Rohan Mehta)
+    const quickFillBtnC = document.getElementById('btn-quick-demo-c');
+    if (quickFillBtnC) {
+        quickFillBtnC.addEventListener('click', () => {
+            fillCredentials('rohan.btech22@college.edu', 'password123', 'Student C: Rohan Mehta (3rd Year IT)');
+        });
+    }
+
+    function fillCredentials(email, pass, label) {
         const emailInput = document.getElementById('login-email');
         const passwordInput = document.getElementById('login-password');
-
         if (emailInput && passwordInput) {
-            emailInput.value = 'arjun.btech24@college.edu';
-            passwordInput.value = 'password123';
-            showToast('Demo credentials filled for Arjun Sharma (1st Year CSE)', 'info');
+            emailInput.value = email;
+            passwordInput.value = pass;
+            showToast(`Filled credentials for ${label}`, 'info');
         }
-    });
+    }
 }
 
 // ------------------------------------------

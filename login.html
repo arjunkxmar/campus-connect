@@ -101,16 +101,22 @@
                 </button>
             </form>
 
-            <!-- Quick Demo Fill Card (For Evaluator Convenience) -->
+            <!-- Quick Demo Fill Card (For Evaluator Convenience & Multi-Student Testing) -->
             <div class="demo-credentials-card">
                 <div class="demo-credentials-title">
-                    <span><i class="fa-solid fa-wand-magic-sparkles"></i> Evaluator Quick-Test</span>
-                    <span class="badge badge-primary">1-Click Fill</span>
+                    <span><i class="fa-solid fa-wand-magic-sparkles"></i> 1-Click Test Accounts</span>
+                    <span class="badge badge-primary">Quick Fill</span>
                 </div>
-                <button type="button" id="btn-quick-demo" class="demo-quick-btn">
-                    <span><strong>Arjun Sharma</strong> (1st Year CSE)</span>
-                    <i class="fa-solid fa-arrow-turn-down-left"></i>
-                </button>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <button type="button" id="btn-quick-demo" class="demo-quick-btn">
+                        <span><strong>Student A: Arjun Sharma</strong> (1st Year CSE)</span>
+                        <i class="fa-solid fa-arrow-turn-down-left"></i>
+                    </button>
+                    <button type="button" id="btn-quick-demo-b" class="demo-quick-btn">
+                        <span><strong>Student B: Priya Patel</strong> (2nd Year CSE)</span>
+                        <i class="fa-solid fa-arrow-turn-down-left"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- Simulation Disclaimer -->

@@ -451,26 +451,57 @@ const DEFAULT_NOTIFICATIONS = [
 // 2. Storage Initialization Engine
 // ==========================================
 const Storage = {
+    /**
+     * Initialize seed data in LocalStorage if not already present.
+     * Note: Does NOT force an auto-login so students can register/log in independently.
+     * 
+     * BACKEND ARCHITECTURE NOTE:
+     * This module serves as an abstraction layer over localStorage for this prototype.
+     * For future production deployment, each method here maps directly to Firebase Firestore:
+     * - getUsers() -> db.collection('users').get()
+     * - getDoubts() -> db.collection('doubts').orderBy('createdAt', 'desc').onSnapshot()
+     * - saveDoubt() -> db.collection('doubts').add(...)
+     * - addAnswer() -> db.collection('doubts').doc(id).collection('answers').add(...)
+     */
     init() {
         if (!localStorage.getItem(STORAGE_KEYS.INITIALIZED)) {
             localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(DEFAULT_USERS));
             localStorage.setItem(STORAGE_KEYS.DOUBTS, JSON.stringify(DEFAULT_DOUBTS));
             localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(DEFAULT_NOTIFICATIONS));
-            localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify(['doubt_1', 'doubt_4']));
             
-            // Set default active user to Arjun Sharma for instant exploration
-            localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(DEFAULT_USERS[0]));
+            // Per-user bookmarks mapping: { [userId]: [doubtId, ...] }
+            const initialBookmarks = {
+                'usr_demo_1': ['doubt_1', 'doubt_4'],
+                'usr_demo_2': ['doubt_1']
+            };
+            localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify(initialBookmarks));
+            
+            // Mark as initialized without setting a permanent auto-login
             localStorage.setItem(STORAGE_KEYS.INITIALIZED, 'true');
-        } else {
-            // Guarantee current user exists if not logged out
-            if (!localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) {
-                // If user cleared session, restore demo user
-                const users = this.getUsers();
-                if (users.length > 0) {
-                    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(users[0]));
-                }
-            }
         }
+    },
+
+    // ------------------------------------------
+    // Real-Time Event Notifier
+    // ------------------------------------------
+    notifyDataChange(type, payload) {
+        window.dispatchEvent(new CustomEvent('campusconnect:data_changed', {
+            detail: { type, payload }
+        }));
+    },
+
+    // ------------------------------------------
+    // Route Protection Guard
+    // ------------------------------------------
+    requireAuth(returnUrl) {
+        const user = this.getCurrentUser();
+        if (!user) {
+            const currentPath = returnUrl || window.location.pathname.split('/').pop() + window.location.search;
+            const target = currentPath ? `login.html?redirect=${encodeURIComponent(currentPath)}` : 'login.html';
+            window.location.href = target;
+            return false;
+        }
+        return true;
     },
 
     // ------------------------------------------
@@ -499,6 +530,7 @@ const Storage = {
         } else {
             localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
         }
+        this.notifyDataChange('user_session', user);
     },
 
     login(email, password) {
@@ -519,7 +551,7 @@ const Storage = {
         }
 
         const newUser = {
-            id: 'usr_' + Date.now(),
+            id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
             name: userData.name,
             email: userData.email,
             password: userData.password,
@@ -544,11 +576,13 @@ const Storage = {
             doubtId: null
         });
 
+        this.notifyDataChange('user_registered', newUser);
         return { success: true, user: newUser };
     },
 
     logout() {
         localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+        this.notifyDataChange('logout', null);
     },
 
     updateUserProfile(updatedFields) {
@@ -608,6 +642,7 @@ const Storage = {
 
         doubts.unshift(newDoubt);
         localStorage.setItem(STORAGE_KEYS.DOUBTS, JSON.stringify(doubts));
+        this.notifyDataChange('doubt_created', newDoubt);
         return newDoubt;
     },
 
@@ -621,6 +656,7 @@ const Storage = {
         if (currentUser && (target.authorId === currentUser.id || currentUser.email.includes('admin'))) {
             doubts = doubts.filter(d => d.id !== doubtId);
             localStorage.setItem(STORAGE_KEYS.DOUBTS, JSON.stringify(doubts));
+            this.notifyDataChange('doubt_deleted', doubtId);
             return true;
         }
         return false;
@@ -661,6 +697,7 @@ const Storage = {
         }
 
         localStorage.setItem(STORAGE_KEYS.DOUBTS, JSON.stringify(doubts));
+        this.notifyDataChange('upvote_doubt', { doubtId, hasUpvoted, count: doubt.upvotes.length });
         return { success: true, upvoted: hasUpvoted, count: doubt.upvotes.length };
     },
 
@@ -699,6 +736,7 @@ const Storage = {
         }
 
         localStorage.setItem(STORAGE_KEYS.DOUBTS, JSON.stringify(doubts));
+        this.notifyDataChange('upvote_answer', { doubtId, answerId, hasUpvoted, count: answer.upvotes.length });
         return { success: true, upvoted: hasUpvoted, count: answer.upvotes.length };
     },
 
@@ -709,22 +747,27 @@ const Storage = {
         const currentUser = this.getCurrentUser();
         if (!currentUser) return { success: false, message: 'Please log in to submit an answer.' };
 
+        if (!answerData || !answerData.text || !answerData.text.trim()) {
+            return { success: false, message: 'Answer content cannot be empty. Please provide your explanation.' };
+        }
+
         const doubts = this.getDoubts();
         const doubt = doubts.find(d => d.id === doubtId);
         if (!doubt) return { success: false, message: 'Doubt not found.' };
 
         const newAnswer = {
-            id: 'ans_' + Date.now(),
+            id: 'ans_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
             authorId: currentUser.id,
             authorName: currentUser.name,
-            authorAvatar: currentUser.avatar,
-            text: answerData.text,
-            codeSnippet: answerData.codeSnippet || null,
+            authorAvatar: currentUser.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=3b82f6&color=fff`,
+            text: answerData.text.trim(),
+            codeSnippet: answerData.codeSnippet ? answerData.codeSnippet.trim() : null,
             upvotes: [],
             isBestAnswer: false,
             createdAt: new Date().toISOString()
         };
 
+        if (!Array.isArray(doubt.answers)) doubt.answers = [];
         doubt.answers.push(newAnswer);
         localStorage.setItem(STORAGE_KEYS.DOUBTS, JSON.stringify(doubts));
 
@@ -738,6 +781,7 @@ const Storage = {
             });
         }
 
+        this.notifyDataChange('answer_added', { doubtId, answer: newAnswer });
         return { success: true, answer: newAnswer };
     },
 
@@ -749,7 +793,7 @@ const Storage = {
         const doubt = doubts.find(d => d.id === doubtId);
         if (!doubt) return { success: false, message: 'Doubt not found.' };
 
-        // Only the author can mark as best answer
+        // Only the student who posted the doubt can mark the best answer
         if (doubt.authorId !== currentUser.id) {
             return { success: false, message: 'Only the student who asked this doubt can mark the Best Answer.' };
         }
@@ -757,7 +801,7 @@ const Storage = {
         const answer = doubt.answers.find(a => a.id === answerId);
         if (!answer) return { success: false, message: 'Answer not found.' };
 
-        const currentlyBest = answer.isBestAnswer;
+        const currentlyBest = Boolean(answer.isBestAnswer);
 
         // Reset all answers
         doubt.answers.forEach(a => a.isBestAnswer = false);
@@ -771,7 +815,7 @@ const Storage = {
                 this.addNotification({
                     userId: answer.authorId,
                     title: 'Your answer was marked as Best Answer! 🏆',
-                    message: `${currentUser.name} accepted your answer as the solution.`,
+                    message: `${currentUser.name} accepted your answer as the verified solution.`,
                     doubtId: doubt.id
                 });
             }
@@ -781,35 +825,63 @@ const Storage = {
         }
 
         localStorage.setItem(STORAGE_KEYS.DOUBTS, JSON.stringify(doubts));
+        this.notifyDataChange('best_answer_toggled', { doubtId, answerId, isBestAnswer: answer.isBestAnswer, isSolved: doubt.isSolved });
         return { success: true, isBestAnswer: answer.isBestAnswer, isSolved: doubt.isSolved };
     },
 
     // ------------------------------------------
-    // Bookmarks / Saved Doubts
+    // Bookmarks / Saved Doubts (Per User)
     // ------------------------------------------
     getBookmarks() {
+        const currentUser = this.getCurrentUser();
+        if (!currentUser) return [];
+
         try {
-            return JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKMARKS)) || [];
+            const raw = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKMARKS)) || {};
+            if (Array.isArray(raw)) {
+                return raw; // Migration support
+            }
+            return Array.isArray(raw[currentUser.id]) ? raw[currentUser.id] : [];
         } catch (e) {
             return [];
         }
     },
 
     toggleBookmark(doubtId) {
-        const bookmarks = this.getBookmarks();
-        const index = bookmarks.indexOf(doubtId);
-        let saved = false;
+        const currentUser = this.getCurrentUser();
+        if (!currentUser) return { success: false, message: 'Please log in to save questions.' };
 
-        if (index > -1) {
-            bookmarks.splice(index, 1);
-            saved = false;
-        } else {
-            bookmarks.push(doubtId);
-            saved = true;
+        try {
+            let raw = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKMARKS)) || {};
+            if (Array.isArray(raw)) {
+                const temp = {};
+                temp[currentUser.id] = raw;
+                raw = temp;
+            }
+
+            if (!Array.isArray(raw[currentUser.id])) {
+                raw[currentUser.id] = [];
+            }
+
+            const userBookmarks = raw[currentUser.id];
+            const index = userBookmarks.indexOf(doubtId);
+            let saved = false;
+
+            if (index > -1) {
+                userBookmarks.splice(index, 1);
+                saved = false;
+            } else {
+                userBookmarks.push(doubtId);
+                saved = true;
+            }
+
+            raw[currentUser.id] = userBookmarks;
+            localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify(raw));
+            this.notifyDataChange('bookmark_toggled', { doubtId, saved });
+            return { success: true, saved };
+        } catch (e) {
+            return { success: false, message: 'Failed to update bookmarks.' };
         }
-
-        localStorage.setItem(STORAGE_KEYS.BOOKMARKS, JSON.stringify(bookmarks));
-        return { success: true, saved };
     },
 
     isBookmarked(doubtId) {
@@ -992,4 +1064,14 @@ function escapeHtml(text) {
 
 // Auto-initialize storage on script load
 Storage.init();
+
+// Cross-tab Synchronization: propagate storage updates across multiple browser tabs
+window.addEventListener('storage', (e) => {
+    if (Object.values(STORAGE_KEYS).includes(e.key)) {
+        window.dispatchEvent(new CustomEvent('campusconnect:data_changed', {
+            detail: { key: e.key, newValue: e.newValue }
+        }));
+    }
+});
+
 
